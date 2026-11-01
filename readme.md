@@ -1,4 +1,4 @@
-# Project template files
+# Project templates
 
 - Each branch contains only required files
 - No license files or any other files not associated with the Cmake should be on the branch
