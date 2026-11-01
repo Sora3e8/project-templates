@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+#find_package(DEPENDENCY REQUIRED)
+# No way around this the name must be specific here
+include("${CMAKE_CURRENT_LIST_DIR}/MultiLibTargets.cmake")
+check_required_components("${PROJECT_NAME}")
+include(CMakeFindDependencyMacro)
+
