@@ -1,4 +1,4 @@
-# Cmake template collection for general C/C++ builds etc...
+# Project template files
 
 - Each branch contains only required files
 - No license files or any other files not associated with the Cmake should be on the branch
