@@ -1,0 +1,6 @@
+component1/*
+build/*
+.clang-format
+.gitignore
+CMakeLists.txt
+Config.cmake.in
