@@ -1,0 +1,29 @@
+#!/bin/env python
+
+import tempfile
+import os
+import sys
+import subprocess as sp
+from pathlib import Path
+
+BRANCH_NAME = sys.argv[1]
+REPO_URL = "https://github.com/Sora3e8/project-templates"
+TEMPLATE_FILES = []
+def main():
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        res = sp.run(["git clone -b "+BRANCH_NAME+" "+REPO_URL+" "+BRANCH_NAME],shell=True,cwd=tmp_dir,capture_output=True,text=True)
+        print(res)
+        if res.returncode!=0:
+            print("Template fetch failed with following error:")
+            print(res.stderr)
+            print(res.stdout)
+            exit(1)
+        print(os.listdir(f"{tmp_dir}/{BRANCH_NAME}"))
+        # with open(f"{tmp_dir}/{BRANCH_NAME}/manifest.list","r") as f:
+        #     TEMPLATE_FILES = f.readlines()
+        # for entry in TEMPLATE_FILES:
+        #     _ = Path(entry).copy(os.getcwd())
+
+
+if __name__ == "__main__":
+    main()
