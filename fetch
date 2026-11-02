@@ -19,10 +19,10 @@ def main():
             print(res.stdout)
             exit(1)
         print(os.listdir(f"{tmp_dir}/{BRANCH_NAME}"))
-        # with open(f"{tmp_dir}/{BRANCH_NAME}/manifest.list","r") as f:
-        #     TEMPLATE_FILES = f.readlines()
-        # for entry in TEMPLATE_FILES:
-        #     _ = Path(entry).copy(os.getcwd())
+        with open(f"{tmp_dir}/{BRANCH_NAME}/manifest.list","r") as f:
+            TEMPLATE_FILES = f.readlines()
+        for entry in TEMPLATE_FILES:
+            _ = Path(entry).copy(os.getcwd())
 
 
 if __name__ == "__main__":
