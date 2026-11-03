@@ -1,7 +1,7 @@
 #!/bin/env python
 
+from os.path import isdir, isfile
 import tempfile
-import os
 import sys
 import subprocess as sp
 from pathlib import Path
@@ -9,21 +9,42 @@ from pathlib import Path
 BRANCH_NAME = sys.argv[1]
 REPO_URL = "https://github.com/Sora3e8/project-templates"
 TEMPLATE_FILES = []
+
+def count_focc(dir:Path,pattern:str):
+    occs = [p for p in Path(dir).glob(pattern)]
+    return len(occs)
+
+# Increments file suffix if it already exists, counts also existing files with the same suffix
+def increment_fdupe(dir:Path,suffix:str):
+    if isfile(dir):
+        occs = count_focc(dir.parent,str(dir.name)+"*") -1
+        if occs>0: suffix=suffix+"."+str(occs)
+        dir = dir.parent.joinpath(dir.name+suffix)
+
+    return dir
+
 def main():
     with tempfile.TemporaryDirectory() as tmp_dir:
         res = sp.run(["git clone -b "+BRANCH_NAME+" "+REPO_URL+" "+BRANCH_NAME],shell=True,cwd=tmp_dir,capture_output=True,text=True)
-        print(res)
         if res.returncode!=0:
             print("Template fetch failed with following error:")
             print(res.stderr)
             print(res.stdout)
             exit(1)
-        print(os.listdir(f"{tmp_dir}/{BRANCH_NAME}"))
-        with open(f"{tmp_dir}/{BRANCH_NAME}/manifest.list","r") as f:
-            TEMPLATE_FILES = f.readlines()
-        for entry in TEMPLATE_FILES:
-            _ = Path(entry).copy(os.getcwd())
 
+        with open(f"{tmp_dir}/{BRANCH_NAME}/manifest.list","r") as f:
+            TEMPLATE_FILES = f.read().split("\n")[:-1]
+        
+        src_dir= Path(f"{tmp_dir}/{BRANCH_NAME}/")
+
+        for entry in TEMPLATE_FILES:
+            for src in src_dir.glob(entry):
+                dst = Path.cwd().joinpath(src.relative_to(src_dir))
+                if isdir(src): Path(dst).mkdir(parents=True,exist_ok=True)
+                else:
+                    Path(dst).parent.mkdir(parents=True,exist_ok=True)
+                    print(src,"->",increment_fdupe(dst,".bak"))
+                    _ = Path(src).copy(increment_fdupe(dst,".bak"))
 
 if __name__ == "__main__":
     main()
